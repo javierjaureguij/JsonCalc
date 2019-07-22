@@ -93,7 +93,6 @@
     strMsgMedia                 BYTE        0ah, 0dh, 0ah, 0dh, " ESTADISTICO MEDIA: ", "$"
     strMsgMediana               BYTE        0ah, 0dh, 0ah, 0dh, " ESTADISTICO MEDIANA: ", "$"
     strMsgModa                  BYTE        0ah, 0dh, 0ah, 0dh, " ESTADISTICO MODA: ", "$"
-    
 
     strMsgResultado             BYTE        0ah, 0dh, 0ah, 0dh, " RESULTADO ", "$"
     strDoblePunto               BYTE        ": ", "$"
@@ -107,7 +106,9 @@
 
     EstadoActual                BYTE        0
     strContenidoArchivo         BYTE        20481 dup(00h)
+    
     strCadenaActual             BYTE        31 dup(00h)
+    strCadenaActual2            BYTE        31 dup(00h)
 
     strNombrePadre              BYTE        31 dup(00h)
     arrayOperaciones            Operacion   50 dup(<>)
@@ -124,6 +125,7 @@
     ; --> Reporte:
 
 
+    strTabulacion               BYTE        09h
     strSaltoLinea               BYTE        0ah, 0dh
     strComilla                  BYTE        22h
 
@@ -135,30 +137,32 @@
 
     strComa                     BYTE        ","
 
-    strReporte                  BYTE        22h, "reporte", 22h, ":"
-    strAlumno                   BYTE        22h, "alumno", 22h, ":"
-    strNombreAlumno             BYTE        22h, "Nombre", 22h, ":", 22h, "Javier Orlando Jauregui Juarez", 22h, ","
-    strCarnetAlumno             BYTE        22h, "Carnet", 22h, ":", 22h, "201503748", 22h, ","
-    strSeccionAlumno            BYTE        22h, "Seccion", 22h, ":", 22h, "A", 22h, ","
-    strCurso                    BYTE        22h, "Curso", 22h, ":", 22h, "Arquitectura de Computadoras Y Ensambladores 1", 22h
+    strReporte                  BYTE        09h, 22h, "reporte", 22h, ":"
 
-    strFechaReporte             BYTE        22h, "fecha", 22h, ":"
-    strDiaReporte               BYTE        22h, "Dia", 22h, ":"
-    strMesReporte               BYTE        22h, "Mes", 22h, ":"
-    strAnioReporte              BYTE        22h, "Anio", 22h, ":"
-    
-    strHoraReporte              BYTE        22h, "hora", 22h, ":"
+    strAlumno                   BYTE        09h, 09h, 22h, "alumno", 22h, ":"
+    strNombreAlumno             BYTE        09h, 09h, 09h, 22h, "Nombre", 22h, ":", 22h, "Javier Orlando Jauregui Juarez", 22h, ","
+    strCarnetAlumno             BYTE        09h, 09h, 09h, 22h, "Carnet", 22h, ":", 22h, "201503748", 22h, ","
+    strSeccionAlumno            BYTE        09h, 09h, 09h, 22h, "Seccion", 22h, ":", 22h, "A", 22h, ","
+    strCurso                    BYTE        09h, 09h, 09h, 22h, "Curso", 22h, ":", 22h, "Arquitectura de Computadoras Y Ensambladores 1", 22h
 
-    strHoraInReporte            BYTE        22h, "Hora", 22h, ":"
-    strMinutosReporte           BYTE        22h, "Minutos", 22h, ":"
-    strSegundosReporte          BYTE        22h, "Segundos", 22h, ":"
+    strFechaReporte             BYTE        09h, 09h, 22h, "fecha", 22h, ":"
+    strDiaReporte               BYTE        09h, 09h, 09h, 22h, "Dia", 22h, ":"
+    strMesReporte               BYTE        09h, 09h, 09h, 22h, "Mes", 22h, ":"
+    strAnioReporte              BYTE        09h, 09h, 09h, 22h, "Anio", 22h, ":"
     
-    strResultados               BYTE        22h, "resultados", 22h, ":"
-    strMediaReporte             BYTE        22h, "media", 22h, ":"
-    strMedianaReporte           BYTE        22h, "mediana", 22h, ":"
-    strModaReporte              BYTE        22h, "moda", 22h, ":"
-    strMenorReporte             BYTE        22h, "menor", 22h, ":"
-    strMayorReporte             BYTE        22h, "mayor", 22h, ":"
+    strHoraReporte              BYTE        09h, 09h, 22h, "hora", 22h, ":"
+    strHoraInReporte            BYTE        09h, 09h, 09h, 22h, "Hora", 22h, ":"
+    strMinutosReporte           BYTE        09h, 09h, 09h, 22h, "Minutos", 22h, ":"
+    strSegundosReporte          BYTE        09h, 09h, 09h, 22h, "Segundos", 22h, ":"
+    
+    strResultados               BYTE        09h, 09h, 22h, "resultados", 22h, ":"
+    strMediaReporte             BYTE        09h, 09h, 09h, 22h, "media", 22h, ":"
+    strMedianaReporte           BYTE        09h, 09h, 09h, 22h, "mediana", 22h, ":"
+    strModaReporte              BYTE        09h, 09h, 09h, 22h, "moda", 22h, ":"
+    strMenorReporte             BYTE        09h, 09h, 09h, 22h, "menor", 22h, ":"
+    strMayorReporte             BYTE        09h, 09h, 09h, 22h, "mayor", 22h, ":"
+
+    strNoHayModa                BYTE        22h, "No hay", 22h
 
     ; --> Errores
 
@@ -533,8 +537,8 @@ LOCAL ErrorArchivo, Salir
         ImprimirEnConsola strErrorCerrarArchivo
     
     Salir:
-        pop ax
         pop bx
+        pop ax
 
 ENDM
 
@@ -817,7 +821,7 @@ GetTamanioCadena PROC USES bx cx si pCadena : PTR BYTE
 ;
 ; Descripción : Obtiene el tamaño de una cadena.
 ; Recibe      : pCadena = cadena a obtener su tamaño.
-; Devuelve    : Registr AL = tamaño de la cadena.
+; Devuelve    : Registro AL = tamaño de la cadena.
 ;------------------------------------------------
 
     Inicializacion:
@@ -944,6 +948,133 @@ GetValorDeIdentificador PROC USES cx di si, pCadenaIdentificador : PTR BYTE
         ret
 
 GetValorDeIdentificador ENDP
+
+;------------------------------------------------
+EjecutarOperacion PROC USES bx dx, tipoOperacion : BYTE, Valor1 : WORD, Valor2 : WORD
+;
+; Descripción : Realiza una operación dependiendo del tipo de operación indicado.
+; Recibe      : tipoOperacion = Tipo de la operación.
+;               Valor1 = Valor izquierdo de la operación.
+;               Valor2 = Valor Derecho de la operación.
+; Devuelve    : AX = Resultado de la operación.
+;------------------------------------------------
+
+    xor ax, ax
+    xor bx, bx
+    xor dx, dx
+
+    cmp tipoOperacion, OP_SUMA
+        je Sumar
+    cmp tipoOperacion, OP_RESTA
+        je Restar
+    cmp tipoOperacion, OP_MULTIPLICACION
+        je Multiplicar
+    cmp tipoOperacion, OP_DIVISION
+        je Dividir
+
+    Sumar:
+
+        mov ax, Valor1
+        add ax, Valor2
+        jmp Salir
+
+    Restar:
+
+        mov ax, Valor1
+        sub ax, Valor2
+        jmp Salir
+
+    Multiplicar:
+
+        mov ax, Valor1
+        imul Valor2
+        jmp Salir
+
+    Dividir:
+
+        mov ax, Valor1
+        cwd
+        idiv Valor2
+        jmp Salir
+
+    Salir:
+        ret
+
+EjecutarOperacion ENDP
+
+;------------------------------------------------
+OrdenarValores PROC USES ax bx cx dx si di
+;
+; Descripción : Guarda los valores del arrayOperaciones en el arreglo arrayValoresOrdenados
+;             : ordenados de mayor a menor. Utiliza el método burbuja para la realización del ordenamiento.
+; Recibe      : NADA
+; Devuelve    : arrayValoresOrdenados = valores ordenados de mayor a menor.
+;------------------------------------------------
+
+    Inicializacion:
+        
+        xor ax, ax
+        xor bx, bx
+        xor cx, cx
+        xor dx, dx
+        xor si, si
+        xor di, di
+
+    CicloRellenarValoresOrdenados:
+
+        mov ax, arrayOperaciones[si].Valor
+        mov arrayValoresOrdenados[di], ax
+
+        add si, TYPE Operacion
+        add di, TYPE WORD
+        inc cx
+
+        cmp cx, cantidadOperaciones
+            jne CicloRellenarValoresOrdenados
+        
+        xor cx, bx
+        xor ax, ax
+        xor si, si
+
+    CicloExterior:
+        
+        xor cx, cx
+        xor dx, dx
+        xor di, di
+
+        CicloInterior:
+
+            mov ax, arrayValoresOrdenados[di]
+            mov bx, arrayValoresOrdenados[di+TYPE WORD]
+
+            cmp ax, bx
+                jl Swap
+
+            jmp EvaluarCicloInterior
+
+            Swap:
+                mov arrayValoresOrdenados[di], bx
+                mov arrayValoresOrdenados[di+TYPE WORD], ax
+
+            EvaluarCicloInterior:
+                add di, TYPE WORD
+                inc dx
+                mov cx, cantidadOperaciones
+                sub cx, si
+                sub cx, 1
+                cmp dx, cx
+                    jb CicloInterior
+                
+        inc si
+        cmp si, cantidadOperaciones
+            jb CicloExterior
+
+    Salir:
+        ret
+
+
+OrdenarValores ENDP
+
 
 ;------------------------------------------------
 AnalizarCadena PROC USES ax bx di, pCadenaDestino: PTR BYTE
@@ -1160,7 +1291,7 @@ LOCAL Estado : BYTE, Negativo : BYTE
         EsDigitoAscii
             jc PrimerDigito
     
-        cmp ax, 2Dh  ; 2Dh = signo '-'
+        cmp ax, "-" 
             jne IncrementarIndice
 
         mov Negativo, 1
@@ -1219,58 +1350,6 @@ LOCAL Estado : BYTE, Negativo : BYTE
 
 AnalizarNumero ENDP
 
-;------------------------------------------------
-EjecutarOperacion PROC USES bx dx, tipoOperacion : BYTE, Valor1 : WORD, Valor2 : WORD
-;
-; Descripción : Realiza una operación dependiendo del tipo de operación indicado.
-; Recibe      : tipoOperacion = Tipo de la operación.
-;               Valor1 = Valor izquierdo de la operación.
-;               Valor2 = Valor Derecho de la operación.
-; Devuelve    : AX = Resultado de la operación.
-;------------------------------------------------
-
-    xor ax, ax
-    xor bx, bx
-    xor dx, dx
-
-    cmp tipoOperacion, OP_SUMA
-        je Sumar
-    cmp tipoOperacion, OP_RESTA
-        je Restar
-    cmp tipoOperacion, OP_MULTIPLICACION
-        je Multiplicar
-    cmp tipoOperacion, OP_DIVISION
-        je Dividir
-
-    Sumar:
-
-        mov ax, Valor1
-        add ax, Valor2
-        jmp Salir
-
-    Restar:
-
-        mov ax, Valor1
-        sub ax, Valor2
-        jmp Salir
-
-    Multiplicar:
-
-        mov ax, Valor1
-        imul Valor2
-        jmp Salir
-
-    Dividir:
-
-        mov ax, Valor1
-        cwd
-        idiv Valor2
-        jmp Salir
-
-    Salir:
-        ret
-
-EjecutarOperacion ENDP
 
 ;------------------------------------------------
 AnalizarOperacion PROC USES ax
@@ -1462,73 +1541,6 @@ LOCAL tipoOperacionPadre : BYTE, tipoOperacionExp : BYTE,
 
 AnalizarOperacion ENDP
 
-
-OrdenarValores PROC USES ax bx cx dx si di
-
-    Inicializacion:
-        
-        xor ax, ax
-        xor bx, bx
-        xor cx, cx
-        xor dx, dx
-        xor si, si
-        xor di, di
-
-    CicloRellenarValoresOrdenados:
-
-        mov ax, arrayOperaciones[si].Valor
-        mov arrayValoresOrdenados[di], ax
-
-        add si, TYPE Operacion
-        add di, TYPE WORD
-        inc cx
-
-        cmp cx, cantidadOperaciones
-            jne CicloRellenarValoresOrdenados
-        
-        xor cx, bx
-        xor ax, ax
-        xor si, si
-
-    CicloExterior:
-        
-        xor cx, cx
-        xor dx, dx
-        xor di, di
-
-        CicloInterior:
-
-            mov ax, arrayValoresOrdenados[di]
-            mov bx, arrayValoresOrdenados[di+TYPE WORD]
-
-            cmp ax, bx
-                jl Swap
-
-            jmp EvaluarCicloInterior
-
-            Swap:
-                mov arrayValoresOrdenados[di], bx
-                mov arrayValoresOrdenados[di+TYPE WORD], ax
-
-            EvaluarCicloInterior:
-                add di, TYPE WORD
-                inc dx
-                mov cx, cantidadOperaciones
-                sub cx, si
-                sub cx, 1
-                cmp dx, cx
-                    jb CicloInterior
-                
-        inc si
-        cmp si, cantidadOperaciones
-            jb CicloExterior
-
-    Salir:
-        ret
-
-
-OrdenarValores ENDP
-
 ;------------------------------------------------
 AnalizarContenidoArchivo PROC USES ax si di cx
 ;
@@ -1674,39 +1686,39 @@ LOCAL Estado : BYTE, indiceOperaciones : WORD
 
 AnalizarContenidoArchivo ENDP
 
+;------------------------------------------------
+GetMayor PROC USES cx si 
+;
+; Descripción : Obtiene el valor mayor de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : AX = resultado de la operación
+;------------------------------------------------
 
-ShowMayor PROC USES ax cx si
-
-    Inicializacion:
+   Inicializacion:
         
         xor ax, ax
         xor cx, cx
         xor si, si
 
         INVOKE OrdenarValores
-
-    Comando:
-
-        mov cx, arrayValoresOrdenados[0]
-
-        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
-        INVOKE GetTamanioCadena, ADDR strCadenaActual
-
-        mov si, ax
-        mov strCadenaActual[si], "$"
-
-        ImprimirEnConsola strMsgMayor
-        ImprimirEnConsola strCadenaActual
     
+    ObtenerValor:
+        mov ax, arrayValoresOrdenados[0]
+
     Salir:
         ret
 
-ShowMayor ENDP
+GetMayor ENDP
 
+;------------------------------------------------
+GetMenor PROC USES cx si 
+;
+; Descripción : Obtiene el valor menor de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : AX = resultado de la operación
+;------------------------------------------------
 
-ShowMenor PROC USES ax cx si
-
-    Inicializacion:
+   Inicializacion:
         
         xor ax, ax
         xor cx, cx
@@ -1714,7 +1726,7 @@ ShowMenor PROC USES ax cx si
 
         INVOKE OrdenarValores
 
-    Comando:
+    ObtenerValor:
         
         mov ax, cantidadOperaciones
         sub ax, 1
@@ -1722,26 +1734,22 @@ ShowMenor PROC USES ax cx si
         mul si
         mov si, ax
 
-        mov cx, arrayValoresOrdenados[si]
-
-        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
-        INVOKE GetTamanioCadena, ADDR strCadenaActual
-
-        mov si, ax
-        mov strCadenaActual[si], "$"
-
-        ImprimirEnConsola strMsgMenor
-        ImprimirEnConsola strCadenaActual
+        mov ax, arrayValoresOrdenados[si]
 
     Salir:
         ret
 
-ShowMenor ENDP
+GetMenor ENDP
 
+;------------------------------------------------
+GetMedia PROC USES cx si di
+;
+; Descripción : Obtiene el valor medio de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : AX = resultado de la operación
+;------------------------------------------------
 
-ShowMedia PROC USES ax cx si di
-
-    Inicializacion:
+   Inicializacion:
         
         xor ax, ax
         xor cx, cx
@@ -1758,28 +1766,25 @@ ShowMedia PROC USES ax cx si di
         cmp di, cantidadOperaciones
             jb Ciclo
 
-    Comando:
 
+    ObtenerValor:
+        
         mov cx, cantidadOperaciones
         cwd
         idiv cx
-        mov cx, ax
-
-        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
-        INVOKE GetTamanioCadena, ADDR strCadenaActual
-
-        mov si, ax
-        mov strCadenaActual[si], "$"
-
-        ImprimirEnConsola strMsgMedia
-        ImprimirEnConsola strCadenaActual
 
     Salir:
         ret
 
-ShowMedia ENDP
+GetMedia ENDP
 
-ShowMediana PROC USES ax cx si di
+;------------------------------------------------
+GetMediana PROC USES cx si di
+;
+; Descripción : Obtiene el valor de la mediana de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : AX = resultado de la operación
+;------------------------------------------------
 
     Inicializacion:
         
@@ -1812,9 +1817,8 @@ ShowMediana PROC USES ax cx si di
             mov cx, 2
             cwd
             idiv cx
-            mov cx, ax
 
-        jmp Imprimir
+        jmp Salir
 
     EsCantidadImpar:
 
@@ -1823,11 +1827,214 @@ ShowMediana PROC USES ax cx si di
         mul si
         mov si, ax
 
-        mov cx, arrayValoresOrdenados[si]
+        mov ax, arrayValoresOrdenados[si]
  
-        jmp Imprimir
+        jmp Salir
 
-    Imprimir:
+    Salir:
+        ret
+
+GetMediana ENDP
+
+
+;------------------------------------------------
+GetModa PROC USES bx cx dx si di
+;
+; Descripción : Obtiene el valor de la moda de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : AX = resultado de la operación
+;------------------------------------------------
+LOCAL moda : WORD, frecuencia : WORD, frecuenciaMayor : WORD
+
+    Inicializacion:
+
+        xor ax, ax
+        xor bx, bx 
+        xor cx, cx
+        xor dx, dx
+        xor si, si
+        xor di, di
+
+        INVOKE OrdenarValores
+
+        mov ax, arrayValoresOrdenados[si]
+        mov moda, ax
+        mov frecuencia, 0
+        mov frecuenciaMayor, 1
+
+    Ciclo:
+
+        cmp ax, arrayValoresOrdenados[si]
+            je AumentarFrecuencia
+
+        CambioValor:
+            
+            mov bx, ax
+            mov ax, arrayValoresOrdenados[si]
+            
+            mov dx, frecuencia
+            mov frecuencia, 0
+
+            cmp frecuenciaMayor, dx
+                ja IncrementarIndice
+
+            mov frecuenciaMayor, dx
+            mov moda, bx
+            jmp AumentarFrecuencia
+
+        AumentarFrecuencia:
+            inc frecuencia
+            jmp IncrementarIndice
+
+        IncrementarIndice:
+            add si, TYPE WORD
+            inc cx
+            cmp cx, cantidadOperaciones
+                jne Ciclo
+
+        mov dx, frecuencia
+        cmp frecuenciaMayor, dx
+            ja GuardarModa
+        
+        mov moda, ax
+        mov frecuenciaMayor, dx
+
+    GuardarModa:
+
+        mov ax, moda
+        cmp frecuenciaMayor, 1
+            je NoHayModa
+        jmp HayModa
+    
+    NoHayModa:
+        CLC
+        jmp Salir
+    HayModa:
+        STC
+        jmp Salir
+
+    Salir:
+        ret
+
+GetModa ENDP
+
+;------------------------------------------------
+ShowMayor PROC USES ax cx si
+;
+; Descripción : Imprime el valor mayor de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : Nada
+;------------------------------------------------
+
+    Inicializacion:
+
+        xor ax, ax
+        xor cx, cx 
+        xor si, si
+
+    Comando:
+        
+        INVOKE GetMayor
+        mov cx, ax
+
+        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
+        INVOKE GetTamanioCadena, ADDR strCadenaActual
+
+        mov si, ax
+        mov strCadenaActual[si], "$"
+
+        ImprimirEnConsola strMsgMayor
+        ImprimirEnConsola strCadenaActual
+    
+    Salir:
+        ret
+
+ShowMayor ENDP
+
+;------------------------------------------------
+ShowMenor PROC USES ax cx si
+;
+; Descripción : Imprime el valor menor de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : Nada
+;------------------------------------------------
+
+    Inicializacion:
+
+        xor ax, ax
+        xor cx, cx
+        xor si, si        
+
+    Comando:
+        
+        INVOKE GetMenor
+        mov cx, ax
+
+        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
+        INVOKE GetTamanioCadena, ADDR strCadenaActual
+
+        mov si, ax
+        mov strCadenaActual[si], "$"
+
+        ImprimirEnConsola strMsgMenor
+        ImprimirEnConsola strCadenaActual
+
+    Salir:
+        ret
+
+ShowMenor ENDP
+
+;------------------------------------------------
+ShowMedia PROC USES ax cx si
+;
+; Descripción : Imprime el valor medio de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : Nada
+;------------------------------------------------
+
+    Inicializacion:
+    
+        xor ax, ax
+        xor cx, cx
+        xor si, si        
+
+    Comando:
+
+        INVOKE GetMedia
+        mov cx, ax
+
+        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
+        INVOKE GetTamanioCadena, ADDR strCadenaActual
+
+        mov si, ax
+        mov strCadenaActual[si], "$"
+
+        ImprimirEnConsola strMsgMedia
+        ImprimirEnConsola strCadenaActual
+
+    Salir:
+        ret
+
+ShowMedia ENDP
+
+;------------------------------------------------
+ShowMediana PROC USES ax cx si
+;
+; Descripción : Imprime el valor de la mediana de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : Nada
+;------------------------------------------------
+
+    Inicializacion:
+
+        xor ax, ax
+        xor cx, cx
+        xor si, si
+
+    Comando:
+
+        INVOKE GetMediana
+        mov cx, ax
 
         INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
         INVOKE GetTamanioCadena, ADDR strCadenaActual
@@ -1837,11 +2044,63 @@ ShowMediana PROC USES ax cx si di
 
         ImprimirEnConsola strMsgMediana
         ImprimirEnConsola strCadenaActual
-
+    
     Salir:
         ret
 
 ShowMediana ENDP
+
+;------------------------------------------------
+ShowModa PROC USES ax cx si
+;
+; Descripción : Imprime el valor de la moda de los resultados de las operaciones.
+; Recibe      : NADA
+; Devuelve    : Nada
+;------------------------------------------------
+
+    Inicializacion:
+
+        xor ax, ax
+        xor cx, cx 
+        xor si, si
+
+    Comando:
+
+        ImprimirEnConsola strMsgModa
+        
+        INVOKE GetModa
+        jnc NoHayModa
+
+        HayModa:
+
+            mov cx, ax
+
+            INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual, SIZEOF strCadenaActual
+            INVOKE GetTamanioCadena, ADDR strCadenaActual
+
+            mov si, ax
+            mov strCadenaActual[si], "$"
+
+            ImprimirEnConsola strCadenaActual
+            jmp Salir
+
+        NoHayModa:
+
+            mov strNoHayModa[0], " "
+            mov strNoHayModa[7], "$"
+
+            ImprimirEnConsola strNoHayModa
+
+            mov strNoHayModa[0], 22h
+            mov strNoHayModa[7], 22h
+
+            jmp Salir
+    
+    Salir:
+        ret
+
+ShowModa ENDP
+
 
 ;------------------------------------------------
 EscribirEnReporte PROC handle : WORD, pCadena : PTR BYTE, tamanioCadena : WORD, saltoLinea : BYTE
@@ -1871,7 +2130,14 @@ EscribirEnReporte PROC handle : WORD, pCadena : PTR BYTE, tamanioCadena : WORD, 
 
 EscribirEnReporte ENDP
 
-CrearReporte PROC USES ax bx cx di si, pNombreReporte : PTR BYTE
+;------------------------------------------------
+CrearReporte PROC USES ax bx cx dx di si, pNombreReporte : PTR BYTE
+;
+; Descripción : Crea el reporte de operaciones en formato JSON.
+; Recibe      : pNombreReporte = dirección de memoria del nombre con el que se guardará el reporte.
+; Devuelve    : NADA.
+;------------------------------------------------
+
 LOCAL handleReporte : WORD
 
     Inicializacion:
@@ -1954,19 +2220,140 @@ LOCAL handleReporte : WORD
 
                 INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
 
+                Resultados:
+
+                    INVOKE EscribirEnReporte, handleReporte, ADDR strResultados, SIZEOF strResultados, 1 ; Resultados
+
+                    INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveAbre, SIZEOF strLlaveAbre, 1
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strMediaReporte, SIZEOF strMediaReporte, 0  ; Media
+                        INVOKE GetMedia
+                        mov cx, ax
+                        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                        INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                        mov cx, ax
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, cx, 0
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strMedianaReporte, SIZEOF strMedianaReporte, 0  ; Mediana
+                        INVOKE GetMediana
+                        mov cx, ax
+                        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                        INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                        mov cx, ax
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, cx, 0
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strModaReporte, SIZEOF strModaReporte, 0  ; Moda
+                        
+                        INVOKE GetModa
+                        jnc NoHayModa
+
+                        HayModa:
+
+                            mov cx, ax
+                            INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                            INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                            mov cx, ax
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, cx, 0
+
+                            jmp FinModa
+
+                        NoHayModa:
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strNoHayModa, SIZEOF strNoHayModa, 0
+                            jmp FinModa
+
+                        FinModa:
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strMenorReporte, SIZEOF strMenorReporte, 0  ; Menor
+                        INVOKE GetMenor
+                        mov cx, ax
+                        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                        INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                        mov cx, ax
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, cx, 0
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+
+                        
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strMayorReporte, SIZEOF strMayorReporte, 0  ; Mayor
+                        INVOKE GetMayor
+                        mov cx, ax
+                        INVOKE ConvertirNumeroToCadena, cx, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                        INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                        mov cx, ax
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, cx, 1
+                        
+
+                    INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveCierra, SIZEOF strLlaveCierra, 0
+                    INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+
+                
+
+                IDPadre:
+
+                INVOKE EscribirEnReporte, handleReporte, ADDR strTabulacion, 1, 0
+                INVOKE EscribirEnReporte, handleReporte, ADDR strTabulacion, 1, 0
+
                 INVOKE EscribirEnReporte, handleReporte, ADDR strComilla, 1, 0
                 INVOKE EscribirEnReporte, handleReporte, pNombreReporte, si, 0   ; ID PADRE
                 INVOKE EscribirEnReporte, handleReporte, ADDR strComilla, 1, 0
                 INVOKE EscribirEnReporte, handleReporte, ADDR strDoblePunto, 1, 1
                 INVOKE EscribirEnReporte, handleReporte, ADDR strCorcheteAbre, SIZEOF strCorcheteAbre, 1
-                
-                    INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveAbre, SIZEOF strLlaveAbre, 1
 
-                    INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveCierra, SIZEOF strLlaveCierra, 1
+                Operaciones:
+
+                    
+                    mov cx, cantidadOperaciones
+                    xor dx, dx
+                    xor di, di
+
+                    Ciclo:
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveAbre, SIZEOF strLlaveAbre, 1
+
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strTabulacion, 1, 0
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strTabulacion, 1, 0
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strTabulacion, 1, 0
+
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strComilla, 1, 0
+
+                            INVOKE GetTamanioCadena, ADDR arrayOperaciones[di].Nombre
+                            mov dx, ax
+
+                            INVOKE EscribirEnReporte, handleReporte, ADDR arrayOperaciones[di].Nombre, dx, 0
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strComilla, 1, 0
+                            
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strDoblePunto, 1, 0
+
+                            INVOKE ConvertirNumeroToCadena, arrayOperaciones[di].Valor, ADDR strCadenaActual2, SIZEOF strCadenaActual
+                            INVOKE GetTamanioCadena, ADDR strCadenaActual2
+                            mov dx, ax
+                            INVOKE EscribirEnReporte, handleReporte, ADDR strCadenaActual2, dx, 1
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveCierra, SIZEOF strLlaveCierra, 0
+
+                        cmp cx, 1
+                            je AumentarIndice
+
+                        INVOKE EscribirEnReporte, handleReporte, ADDR strComa, SIZEOF strComa, 1
+                        
+                        AumentarIndice:
+
+                            add di, TYPE Operacion
+                            dec cx
+                            cmp cx, 0
+                                jne Ciclo
+
 
                 INVOKE EscribirEnReporte, handleReporte, ADDR strCorcheteCierra, SIZEOF strCorcheteCierra, 1
 
+            INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveCierra, SIZEOF strLlaveCierra, 1
+
         INVOKE EscribirEnReporte, handleReporte, ADDR strLlaveCierra, SIZEOF strLlaveCierra, 1
+
+    Cierre:
 
         CerrarArchivo handleReporte
 
@@ -1975,8 +2362,14 @@ LOCAL handleReporte : WORD
 
 CrearReporte ENDP
 
-
+;------------------------------------------------
 ShowID PROC USES ax bx cx di si, pEntrada : PTR BYTE
+;
+; Descripción : Imprime el valor de un identificador o, en caso de que se pase el nombre del objeto padre,
+;             : se creará el reporte con extensión .json de operaciones.
+; Recibe      : pEntrada = dirección de memoria donde se encuentra la cadena con el identificador a mostrar.
+; Devuelve    : NADA
+;------------------------------------------------
 
     Inicializacion:
         
@@ -2135,7 +2528,7 @@ EjecutarMenu PROC
             cmp strBufferEntrada[9], 00h
                 jne OpMayor
             
-            ;INVOKE ShowModa
+            INVOKE ShowModa
             jmp OpConsola
 
 
