@@ -21,11 +21,11 @@ Después de realizar lo anterior, se generará el archivo ejecutable JsonCalc.ex
 
 ### :sparkler: Uso
 
-Para hacer uso del programa es necesario cargar un archivo de entrada por medio de la **opción 1** en el menú principal e ingresar el nombre del archivo entrada **(El archivo de entrada debe estar en la misma ubicación que el ejecutable)**:
+Para hacer uso del programa es necesario cargar un archivo de entrada por medio de la **opción 1** en el menú principal e ingresar el nombre del archivo entrada **(el archivo de entrada debe estar en la misma ubicación que el ejecutable)**:
 
 ![Entrada](Capturas/Entrada.png)
 
-Si el archivo de entrada es correcto se mostrará el mensaje **Se ha cargado el archivo con exito!!**:
+Si el archivo de entrada es correcto se mostrará el mensaje **"Se ha cargado el archivo con exito!!"**:
 
 ![Entrada2](Capturas/Entrada2.png)
 
