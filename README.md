@@ -19,7 +19,7 @@ Después de realizar lo anterior, se generará el archivo ejecutable JsonCalc.ex
 
 ![Ejecutable](Capturas/ejecutable.png)
 
-### :sparkler: Uso
+### :diamonds: Uso del programa
 
 Para hacer uso del programa es necesario cargar un archivo de entrada por medio de la **opción 1** en el menú principal e ingresar el nombre del archivo entrada **(el archivo de entrada debe estar en la misma ubicación que el ejecutable)**:
 
