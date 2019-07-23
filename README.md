@@ -9,7 +9,7 @@ Este programa fue realizado como parte del curso de **Arquitectura de Computador
 
 Para la ejecución de este programa se utiliza el emulador [DOSBox](https://www.dosbox.com/) en su versión 0.74-3 y el ensamblador **MASM16** para la generación del ejecutable.
 
-### 🔧 Generación del ejecutable
+### 🛠️ Generación del ejecutable
 
 Para la generación del ejecutable abrimos en **DOSBox** la ubicación donde se encuentra el código de fuente [JsonCalc.asm](JsonCalc.asm) e ingresamos el comando `ml jsoncalc.asm`:
 ![Captura generación ejecutable 1](Capturas/genejecutable1.png)
