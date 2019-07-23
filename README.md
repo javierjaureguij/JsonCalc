@@ -3,7 +3,7 @@ Programa desarrollado en MASM16 para realizar operaciones aritméticas y estadí
 
 ## :information_source:  Información General
 
-Este programa fue realizado como parte del curso de **Arquitectura de Computadoras y Ensambladores 1** de la Universidad San Carlos de Guatemala. Los requerimientos utilizados para su elaboración pueden ser encontrados en el documento [Enunciado_Practica5.pdf](Enunciado_Practica5.pdf).
+Este programa fue realizado como parte del curso de **Arquitectura de Computadoras y Ensambladores 1** de la Universidad San Carlos de Guatemala. Los requerimientos utilizados para su elaboración pueden ser encontrados en el documento [Enunciado_Practica5.pdf](Enunciado_Practica5.pdf). Todo el código de fuente del programa se encuentra en el archivo [JsonCalc.asm](JsonCalc.asm)
 
 ### 📋 Pre-requisitos
 
