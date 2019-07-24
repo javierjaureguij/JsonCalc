@@ -12,7 +12,6 @@ Para la ejecución de este programa se utiliza el emulador [DOSBox](https://www.
 ### 🛠️ Generación del ejecutable
 
 Para la generación del ejecutable abrimos en **DOSBox** la ubicación donde se encuentra el código de fuente [JsonCalc.asm](JsonCalc.asm) e ingresamos el comando `ml jsoncalc.asm`:
-![Captura generación ejecutable 1](Capturas/genejecutable1.png)
 ![Captura generación ejecutable 2](Capturas/genejecutable2.png)
 
 Después de realizar lo anterior, se generará el archivo ejecutable JsonCalc.exe, el cual se ejecuta en **DOSBox** para poder hacer uso del programa:
@@ -34,3 +33,9 @@ Una vez cargado el archivo, se ingresa a la **opción 2** para acceder a la cons
 ![Operaciones](Capturas/Operaciones.png)
 
 Consultar [Enunciado_Practica5.pdf](Enunciado_Practica5.pdf) para ver todas las funcionalidades del programa y su uso.
+
+### :books: Referencias
+
+- **Instalación de DosBox y MASM en Windows 10:** https://youtu.be/pIRd79UsHXA?list=PLqRgrpHSnbblV_V42h-AFTioftYmi469H
+
+- Libro recomendado: **Lenguaje Ensamblador para Computadoras Basadas en Intel - Quinta Edición - Kip. R. Irvine - ISBN: 978-970-26-1081-6**
