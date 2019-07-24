@@ -14,9 +14,7 @@ Para la ejecución de este programa se utiliza el emulador [DOSBox](https://www.
 Para la generación del ejecutable abrimos en **DOSBox** la ubicación donde se encuentra el código de fuente [JsonCalc.asm](JsonCalc.asm) e ingresamos el comando `ml jsoncalc.asm`:
 ![Captura generación ejecutable 2](Capturas/genejecutable2.png)
 
-Después de realizar lo anterior, se generará el archivo ejecutable JsonCalc.exe, el cual se ejecuta en **DOSBox** para poder hacer uso del programa:
-
-![Ejecutable](Capturas/ejecutable.png)
+Después de realizar lo anterior, se generará el archivo ejecutable JsonCalc.exe, el cual se ejecuta en **DOSBox** para poder hacer uso del programa.
 
 ### :diamonds: Uso del programa
 
